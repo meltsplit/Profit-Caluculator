@@ -10,6 +10,7 @@ class ResultViewController: UIViewController {
     @IBOutlet weak var expanationLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         if plusminus == 1 { sign = "+"}
         else {sign = ""}

@@ -1,6 +1,6 @@
 import UIKit
 
-class CalculateViewController: UIViewController {
+class CalculateViewController: UIViewController, UITextFieldDelegate {
 
     var numOfStock = 0
     var plusMinusSign = 0
@@ -16,6 +16,15 @@ class CalculateViewController: UIViewController {
     @IBOutlet weak var profitPctSlider: UISlider!
     
     @IBOutlet weak var countStockLabel: UILabel!
+    
+    override func viewDidLoad() {
+        priceTextField.delegate = self
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        priceTextField.endEditing(true)
+        return true
+    }
     
     @IBAction func plusMinusBtnPressed(_ sender: UIButton) {
         var plusMinus = 0
@@ -36,7 +45,7 @@ class CalculateViewController: UIViewController {
     }
     @IBAction func profitPctChanged(_ sender: UISlider) {
         profitPct = Int(sender.value)
-        profitPctLabel.text = String(format: "%0.1f%%", sender.value)
+        profitPctLabel.text = String(format: "%.0f%%", sender.value)
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
@@ -48,8 +57,14 @@ class CalculateViewController: UIViewController {
         let price_str = priceTextField.text!
         if price_str != "" {
             price = Int(price_str)!
-            let result = plusMinusSign * price * numOfStock * profitPct/100
-            finalResult = String(format : "%.0f", result)
+            print(price)
+            print(profitPct)
+            var result = plusMinusSign * price * numOfStock
+            print(result)
+            result = Int(Double(result)  * Double(profitPct)/100.0)
+            print(result)
+            
+            finalResult = String(result)
         }
         
         self.performSegue(withIdentifier: "GoToResult", sender: self)
@@ -58,6 +73,7 @@ class CalculateViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "GoToResult" {
             let destinationVC = segue.destination as! ResultViewController
+           
             destinationVC.total_profit = finalResult
             destinationVC.plusminus = plusMinusSign
             
